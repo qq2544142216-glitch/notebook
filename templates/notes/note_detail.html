@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ note.title }} - Мой Блокнот{% endblock %}
+
+{% block content %}
+<div class="card shadow {% if note.is_completed %}completed{% endif %} priority-{{ note.priority }}">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2 class="mb-0">
+            {% if note.is_completed %}<s>{% endif %}
+            {{ note.title }}
+            {% if note.is_completed %}</s>{% endif %}
+        </h2>
+        <div>
+            {% if note.priority == 'high' %}
+                <span class="badge bg-danger"><i class="bi bi-exclamation-triangle"></i> Высокий приоритет</span>
+            {% elif note.priority == 'medium' %}
+                <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-circle"></i> Средний приоритет</span>
+            {% else %}
+                <span class="badge bg-success"><i class="bi bi-check-circle"></i> Низкий приоритет</span>
+            {% endif %}
+            
+            {% if note.is_completed %}
+                <span class="badge bg-success"><i class="bi bi-check2-all"></i> Выполнено</span>
+            {% else %}
+                <span class="badge bg-secondary"><i class="bi bi-clock"></i> Активно</span>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <div class="mb-4">
+            <h5><i class="bi bi-card-text"></i> Содержание:</h5>
+            <div class="card-text p-3 bg-light rounded">
+                {{ note.content|linebreaks }}
+            </div>
+        </div>
+        
+        <div class="row text-muted">
+            <div class="col-md-6">
+                <p><i class="bi bi-calendar-plus"></i> <strong>Создано:</strong> {{ note.created_at|date:"d.m.Y H:i" }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><i class="bi bi-calendar-check"></i> <strong>Обновлено:</strong> {{ note.updated_at|date:"d.m.Y H:i" }}</p>
+            </div>
+            <div class="col-12">
+                <p><i class="bi bi-person"></i> <strong>Автор:</strong> {{ note.author.username }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card-footer">
+        <div class="btn-group">
+            <a href="{% url 'note_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Назад к списку
+            </a>
+            {% if perms.notes.can_change_note %}
+            <a href="{% url 'note_update' note.pk %}" class="btn btn-primary">
+                <i class="bi bi-pencil"></i> Редактировать
+            </a>
+            {% endif %}
+            {% if perms.notes.can_delete_note %}
+            <a href="{% url 'note_delete' note.pk %}" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Удалить
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

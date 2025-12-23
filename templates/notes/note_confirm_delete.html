@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление заметки - Мой Блокнот{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h2 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Подтверждение удаления</h2>
+            </div>
+            
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <h4 class="alert-heading"><i class="bi bi-exclamation-octagon"></i> Внимание!</h4>
+                    <p>Вы собираетесь удалить заметку. Это действие нельзя отменить.</p>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-danger">{{ note.title }}</h5>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> Создано: {{ note.created_at|date:"d.m.Y H:i" }}<br>
+                                <i class="bi bi-person"></i> Автор: {{ note.author.username }}
+                            </small>
+                        </p>
+                        {% if note.content %}
+                        <div class="mt-3">
+                            <strong>Содержание:</strong>
+                            <p class="text-muted mt-2">{{ note.content|truncatewords:50 }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'note_detail' note.pk %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Отмена
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Удалить заметку
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
